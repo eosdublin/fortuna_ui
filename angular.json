@@ -116,7 +116,7 @@
       }
     }
   },
-  "defaultProject": "angular-truffle-box",
+  "defaultProject": "fortune_ui",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
