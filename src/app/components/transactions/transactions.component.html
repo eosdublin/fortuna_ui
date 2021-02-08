@@ -1,0 +1,50 @@
+<div class="transactions-wrapper">
+  <span class="title mr-auto">Pending transaction ( <span class="pending-count">{{web3Service.transCount$ | async }}</span> pending )</span>
+  <div class="wrapper" *ngFor="let trans of transactions$ | async">
+    <div class="wrapper-col">
+      <span>Operation</span>
+      <div class="read-only mt-2">
+        <span class="pr-3">{{trans.type}}</span>
+      </div>
+      <div class="operation d-flex align-items-center mt-3" style="height: 46px; font-size: 14px;">
+        <span>Transaction id: {{trans.id}}</span>
+      </div>
+    </div>
+    <div class="wrapper-col">
+      <div class="form-group">
+        <span>{{trans.type === 'Replace signer' ? 'Previous' : 'Receiver'}}</span>
+        <input type="text" readonly
+               style="font-size: 14px;color: #8181A5;"
+               class="form-control mt-2"
+               value="{{trans.account}}">
+      </div>
+    </div>
+
+    <div class="wrapper-col">
+      <div class="form-group">
+        <ng-container>
+          <span>{{trans.type === 'Replace signer' ? 'New signer' : 'Amount'}}</span>
+          <input type="text" readonly
+                 style="font-size: 14px;color: #8181A5;"
+                 class="form-control mt-2 mb-3"
+                 value="{{trans.amount}}">
+        </ng-container>
+        <div class="d-flex justify-content-between align-items-center">
+          <button class="btn btn-yellow"
+                  [disabled]="!web3Service.accountSubject.getValue().length"
+                  (click)="confirmTransaction(trans.id, trans.confirmations)">Confirm</button>
+          <span>{{trans.confirmations}} of 5</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="web3Service.showPagiSubject.getValue().length" class="w-100 d-flex justify-content-center align-items-center pagi">
+    <button class="btn btn-yellow" [disabled]="pagiId === 0">Prev</button>
+    <div class="pages">
+      <span *ngFor="let page of web3Service.showPagi$ | async; let i = index"
+            (click)="getTransactions(i);"> {{page.pagiText}} </span>
+    </div>
+    <button class="btn btn-yellow">Next</button>
+  </div>
+</div>

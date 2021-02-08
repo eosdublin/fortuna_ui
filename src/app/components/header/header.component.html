@@ -1,0 +1,65 @@
+<div class="d-flex align-items-center header-wrap">
+  <span class="title mr-auto">Fortuna Minting Panel</span>
+  <div class="d-flex align-items-center">
+    <span class="toggle-span" (click)="toggle = false; web3Service.disconnect()">TEST NET</span>
+    <div class="toggle-wrap ml-2 mr-2" (click)="toggle = !toggle; web3Service.disconnect()">
+      <div class="toggle-btn" [style.left]="!toggle ? '3px' : '21px'"></div>
+    </div>
+    <span class="toggle-span" (click)="toggle = true; web3Service.disconnect()">MAIN NET</span>
+  </div>
+  <button *ngIf="!ifConnected" (click)="connect()" class="btn login-btn">Connect MetaMask</button>
+  <ng-select class="login-select"
+             *ngIf="ifConnected"
+             placeholder="{{accAddress}}"
+             [searchable]="false" (change)="web3Service.disconnect()">
+    <ng-option>Disconnect</ng-option>
+  </ng-select>
+</div>
+
+<form [formGroup]="transForm" novalidate class="wrapper">
+  <div class="wrapper-col">
+    <span>Operation</span>
+    <ng-select class="mt-2 operation-select"
+               placeholder="Mint for"
+               formControlName="type"
+               [searchable]="false">
+      <ng-option [value]="'Mint for'">Mint for</ng-option>
+      <ng-option [value]="'Replace signer'">Replace signer</ng-option>
+      <ng-option [value]="'Return deposit'">Return deposit</ng-option>
+    </ng-select>
+  </div>
+  <div class="wrapper-col">
+    <div class="form-group">
+      <span *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Return deposit'">{{"Receiver"}}</span>
+      <span *ngIf="transForm.value.type === 'Replace signer'">{{"Previous"}}</span>
+      <input type="text" *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Return deposit'"
+             [ngClass]="{'border-danger': transForm.controls['receiver'].invalid && transForm.controls['receiver'].touched}"
+             class="form-control mt-2"
+             formControlName="receiver"
+             placeholder="Address">
+      <input type="text" *ngIf="transForm.value.type === 'Replace signer'"
+             class="form-control mt-2"
+             formControlName="prevSigner"
+             placeholder="Address">
+    </div>
+  </div>
+  <div class="wrapper-col">
+    <div class="form-group">
+      <span *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Return deposit'">{{"Amount"}}</span>
+      <span *ngIf="transForm.value.type === 'Replace signer'">{{"New signer"}}</span>
+      <input type="number"
+             min="0"
+             *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Return deposit'"
+             [ngClass]="{'border-danger': !transForm.value.amount && transForm.controls['amount'].touched}"
+             class="form-control mt-2 mb-3"
+             formControlName="amount"
+             placeholder="0">
+      <input type="text"
+             *ngIf="transForm.value.type === 'Replace signer'"
+             class="form-control mt-2 mb-3"
+             formControlName="newSigner"
+             placeholder="Address">
+      <button class="btn btn-yellow" [disabled]="!transForm.valid || !web3Service.accountSubject.getValue().length" (click)="submitTransaction()">Submit</button>
+    </div>
+  </div>
+</form>

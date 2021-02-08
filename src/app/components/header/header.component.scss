@@ -1,0 +1,54 @@
+.header-wrap{
+  padding: 25px 0 54px;
+
+  .login-btn{
+    width: 200px;
+    height: 40px;
+    background-color: #012F67;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    margin-left: 50px;
+  }
+
+  .login-select {
+    margin-left: 50px;
+
+    ::ng-deep .ng-select-container {
+      height: 40px;
+      box-shadow: none;
+      border: none;
+      background-color: #012F67;
+
+      .ng-placeholder {
+        font-size: 14px;
+        color: #fff;
+      }
+    }
+  }
+
+  .toggle-span{
+    cursor: pointer;
+  }
+
+  .toggle-wrap{
+    width: 40px;
+    height: 22px;
+    background-color: #012F67;
+    border-radius: 12px;
+    padding: 3px;
+    position: relative;
+    cursor: pointer;
+
+    .toggle-btn{
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: #fff;
+      transition: all .2s linear;
+    }
+
+  }
+
+}

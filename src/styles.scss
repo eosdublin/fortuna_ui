@@ -1,0 +1,93 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+*{
+  margin: 0;
+  padding: 0;
+  font-family: Montserrat;
+  font-weight: 600;
+}
+
+.form-control{
+  height: 48px;
+
+  &::placeholder {
+    color: #8181A5;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+}
+.operation-select .ng-select-container{
+  height: 48px!important;
+  min-height: 48px!important;
+  border-bottom-right-radius: 4px!important;
+  border-bottom-left-radius: 4px!important;
+
+  .ng-placeholder{
+    color: #8181A5!important;
+    font-size: 14px!important;
+    font-weight: 800;
+  }
+
+  .ng-clear-wrapper{
+    display: none;
+  }
+
+}
+
+.operation-select .ng-dropdown-panel.ng-select-bottom {
+  border-top-color: #ccc!important;
+  margin-top: 10px!important;
+  border-radius: 4px!important;
+}
+
+.title{
+  font-size: 24px;
+  color: #232323;
+}
+
+.pending-count{
+  color: #8181A5!important;
+}
+
+.btn-yellow{
+  background-color: #FFB900;
+  color: #fff;
+  border-radius: 8px;
+  width: 50%;
+  height: 46px;
+
+  &:disabled{
+    cursor: no-drop;
+    background-color: #A4A4A4;
+  }
+
+}
+
+.wrapper{
+  background-color: #fff;
+  padding: 18px 38px;
+  border-radius: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  .wrapper-col{
+    width: calc(33.33% - 51px);
+
+    & + .wrapper-col{
+      margin-left: 51px;
+    }
+
+    .span{
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+  }
+
+}
+
