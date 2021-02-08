@@ -1,7 +1,7 @@
 import { AppPage } from './app.po';
 import { browser } from 'protractor';
 
-describe('angular-truffle-box meta-sender', () => {
+describe('fortune_ui meta-sender', () => {
   let page: AppPage;
 
   beforeEach(() => {

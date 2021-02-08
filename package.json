@@ -1,11 +1,11 @@
 {
-  "name": "angular-truffle-box",
+  "name": "fortune_ui",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build:pages": "ng build --prod --base-href \"https://eosdublin.github.io/fortuna_ui/\"",
+    "build:production": "ng build --prod --base-href \"https://eosdublin.github.io/fortuna_ui/\"",
     "build": "ng build",
     "test": "ng test --watch=false",
     "lint": "ng lint",

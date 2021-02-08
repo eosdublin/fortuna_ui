@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('angular-truffle-box App', () => {
+describe('fortune_ui App', () => {
   let page: AppPage;
 
   beforeEach(() => {
@@ -9,6 +9,6 @@ describe('angular-truffle-box App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getHeader()).toContain('Angular Truffle Box');
+    expect(page.getHeader()).toContain('Fortune UI');
   });
 });
