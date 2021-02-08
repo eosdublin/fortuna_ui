@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "fortune_ui": {
+    "fortuna_ui": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -11,7 +11,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "dist/fortuna_ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
@@ -49,18 +49,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "fortune_ui:build"
+            "browserTarget": "fortuna_ui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "fortune_ui:build:production"
+              "browserTarget": "fortuna_ui:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "fortune_ui:build"
+            "browserTarget": "fortuna_ui:build"
           }
         },
         "test": {
@@ -92,7 +92,7 @@
         }
       }
     },
-    "fortune_ui-e2e": {
+    "fortuna_ui-e2e": {
       "root": "e2e",
       "sourceRoot": "e2e",
       "projectType": "application",
@@ -101,7 +101,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "fortune_ui:serve"
+            "devServerTarget": "fortuna_ui:serve"
           }
         },
         "lint": {
@@ -116,7 +116,7 @@
       }
     }
   },
-  "defaultProject": "fortune_ui",
+  "defaultProject": "fortuna_ui",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

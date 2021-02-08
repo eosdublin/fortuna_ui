@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('fortune_ui App', () => {
+describe('fortuna_ui App', () => {
   let page: AppPage;
 
   beforeEach(() => {
