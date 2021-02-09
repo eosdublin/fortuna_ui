@@ -12,6 +12,7 @@ export class TransactionsComponent implements OnInit {
   public transactions$: Observable<any[]> = this.transactionsSubject.asObservable();
   public accounts = [];
   public pagiId = 0;
+  public maxPages: number;
 
   constructor(public web3Service: Web3Service) {
 
@@ -39,6 +40,7 @@ export class TransactionsComponent implements OnInit {
 
   async getTransactions(pagi) {
     this.pagiId = pagi;
+    this.maxPages = this.web3Service.showPagiSubject.getValue().length - 1;
     try {
       const transactions = await this.web3Service.getTransactions(pagi);
       this.transactionsSubject.next(transactions);

@@ -45,12 +45,12 @@ export class Web3Service {
   public async bootstrapWeb3() {
     if (window.ethereum) {
       this.web3 = new Web3(window.ethereum);
-      window.ethereum.request({ method: 'eth_requestAccounts' });
+      window.ethereum.request({method: 'eth_requestAccounts'});
     } else {
       this.web3 = new Web3(window.web3.currentProvider);
     }
 
-    const accs = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const accs = await window.ethereum.request({method: 'eth_requestAccounts'});
     this.accountSubject.next(accs);
 
     await this.loadContract();
@@ -69,42 +69,62 @@ export class Web3Service {
   public async getTransactions(pagiNum) {
     await this.loadContract();
 
-    const transCount = await this.contract.methods.getPendingTransactionCount().call();
-    this.transCountSubject.next(transCount);
+    const pendingCount = await this.contract.methods.getPendingTransactionCount().call();
+    this.transCountSubject.next(pendingCount);
 
-    let transIds = await this.contract.methods.getPendingTransactionIds(0, transCount).call();
-    transIds = [...transIds].reverse();
+    let transCount = await this.contract.methods.transactionCount().call()
+    transCount = Number.parseInt(transCount)
 
-    const trans = [];
+    let trans = [];
 
     if (transCount > 20) {
 
-      if (!this.showPagiSubject.getValue().length) {
-        const pagi = [];
-        let count = 1;
-        let pagiIds = [];
+      const pagi = [];
+      let count = 1;
+      let pagiIds = [];
 
-        for (let i = 1; i <= transCount; i++) {
-          pagiIds.push(transIds[i - 1]);
+      for (let i = 1; i <= transCount; i++) {
+        pagiIds.push(transCount - i);
 
-          if (i % 20 === 0) {
-            pagi.push({
-              pagiText: `${count} - ${i}`,
-              pagiIds: pagiIds
-            });
-            count = i + 1;
-            pagiIds = [];
-          } else if (i % 20 !== 0 && i === transCount) {
-            pagi.push({
-              pagiText: `${count} - ${i}`,
-              pagiIds: pagiIds
-            });
-          }
+        if (i % 20 === 0) {
+          pagi.push({
+            pagiText: `${count}-${i}`,
+            pagiIds: pagiIds,
+            active: pagiNum
+          });
+          count = i + 1;
+          pagiIds = [];
+        } else if (i % 20 !== 0 && i === transCount) {
+          pagi.push({
+            pagiText: `${count}-${i}`,
+            pagiIds: pagiIds,
+            active: pagiNum
+          });
         }
-
-        pagi[0].active = true;
-        this.showPagiSubject.next(pagi);
       }
+
+      pagi.push({
+        pagiText: '31-40',
+        pagiIds: pagiIds,
+        active: pagiNum
+      });
+      pagi.push({
+        pagiText: '41-50',
+        pagiIds: pagiIds,
+        active: pagiNum
+      });
+      pagi.push({
+        pagiText: '51-60',
+        pagiIds: pagiIds,
+        active: pagiNum
+      });
+      pagi.push({
+        pagiText: '61-70',
+        pagiIds: pagiIds,
+        active: pagiNum
+      });
+
+      this.showPagiSubject.next(pagi);
 
       for (const id of this.showPagiSubject.getValue()[pagiNum].pagiIds) {
         const transaction = await this.contract.methods.transactions(id).call();
@@ -116,11 +136,12 @@ export class Web3Service {
           // tslint:disable-next-line:max-line-length
           amount: txinfo[0] === 'Mint for' ? txinfo[2] * Math.pow(10, 10) + ' tokens' : (txinfo[0] === 'Return deposit' ? txinfo[2] * Math.pow(10, 18) + ' wei' : txinfo[2]),
           confirmations: confirmations,
-          id: id
+          id: id,
+          executed: transaction.executed
         });
       }
     } else {
-      for (const id of transIds) {
+      for (let id = 0; id < transCount; id++) {
         const transaction = await this.contract.methods.transactions(id).call();
         const confirmations = await this.contract.methods.getConfirmationCount(id).call();
         const txinfo = transaction[0].split(',');
@@ -130,10 +151,12 @@ export class Web3Service {
           // tslint:disable-next-line:max-line-length
           amount: txinfo[0] === 'Mint for' ? txinfo[2] * Math.pow(10, 10) + ' tokens' : (txinfo[0] === 'Return deposit' ? txinfo[2] * Math.pow(10, 18) + ' wei' : txinfo[2]),
           confirmations: confirmations,
-          id: id
+          id: id,
+          executed: transaction.executed
         });
       }
     }
+
     return trans;
   }
 
@@ -159,7 +182,7 @@ export class Web3Service {
       let gas = await this.contract.methods.confirmTransaction(id)
         .estimateGas({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice});
 
-      if (confirms.toString() === '4') {
+      if (confirms.toString() >= '4') {
         gas = 250000
       }
       await this.contract.methods.confirmTransaction(id)
