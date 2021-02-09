@@ -103,27 +103,6 @@ export class Web3Service {
         }
       }
 
-      pagi.push({
-        pagiText: '31-40',
-        pagiIds: pagiIds,
-        active: pagiNum
-      });
-      pagi.push({
-        pagiText: '41-50',
-        pagiIds: pagiIds,
-        active: pagiNum
-      });
-      pagi.push({
-        pagiText: '51-60',
-        pagiIds: pagiIds,
-        active: pagiNum
-      });
-      pagi.push({
-        pagiText: '61-70',
-        pagiIds: pagiIds,
-        active: pagiNum
-      });
-
       this.showPagiSubject.next(pagi);
 
       for (const id of this.showPagiSubject.getValue()[pagiNum].pagiIds) {
