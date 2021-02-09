@@ -23,7 +23,11 @@
     <div class="wrapper-col">
       <div class="form-group">
         <ng-container>
-          <span>{{trans.type === 'Replace signer' ? 'New signer' : 'Amount'}}</span>
+          <div class="d-flex justify-content-between">
+            <span>{{trans.type === 'Replace signer' ? 'New signer' : 'Amount'}}</span>
+            <span *ngIf="trans.executed" style="color: green">Confirmed</span>
+            <span *ngIf="!trans.executed && trans.confirmations > 4" style="color: darkred">Failed</span>
+          </div>
           <input type="text" readonly
                  style="font-size: 14px;color: #8181A5;"
                  class="form-control mt-2 mb-3"
@@ -31,20 +35,39 @@
         </ng-container>
         <div class="d-flex justify-content-between align-items-center">
           <button class="btn btn-yellow"
-                  [disabled]="!web3Service.accountSubject.getValue().length"
+                  [disabled]="!web3Service.accountSubject.getValue().length || trans.executed"
                   (click)="confirmTransaction(trans.id, trans.confirmations)">Confirm</button>
-          <span>{{trans.confirmations}} of 5</span>
+          <span class="ml-auto">{{trans.confirmations}} of 5</span>
         </div>
       </div>
     </div>
   </div>
 
   <div *ngIf="web3Service.showPagiSubject.getValue().length" class="w-100 d-flex justify-content-center align-items-center pagi">
-    <button class="btn btn-yellow" [disabled]="pagiId === 0">Prev</button>
+    <button class="btn btn-yellow"
+            (click)="getTransactions(pagiId - 1);"
+            [disabled]="pagiId === 0">Prev</button>
     <div class="pages">
-      <span *ngFor="let page of web3Service.showPagi$ | async; let i = index"
-            (click)="getTransactions(i);"> {{page.pagiText}} </span>
+      <span *ngIf="pagiId > 1 && pagiId !== 0"
+            (click)="getTransactions(0);"> {{web3Service.showPagiSubject.getValue()[0].pagiText}} </span>
+      <ng-container *ngIf="pagiId > 1">
+        ...
+      </ng-container>
+      <span *ngIf="pagiId > 0"
+            (click)="getTransactions(pagiId - 1);"> {{web3Service.showPagiSubject.getValue()[pagiId - 1].pagiText}} </span>
+      <span class="active"> {{web3Service.showPagiSubject.getValue()[pagiId].pagiText}} </span>
+      <span *ngIf="pagiId < web3Service.showPagiSubject.getValue().length - 1"
+            (click)="getTransactions(pagiId + 1);"> {{web3Service.showPagiSubject.getValue()[pagiId + 1].pagiText}} </span>
+      <ng-container *ngIf="pagiId < web3Service.showPagiSubject.getValue().length - 2">
+        ...
+      </ng-container>
+      <span *ngIf="pagiId < web3Service.showPagiSubject.getValue().length - 2"
+            (click)="getTransactions(web3Service.showPagiSubject.getValue().length - 1);"> {{
+        web3Service.showPagiSubject.getValue()[web3Service.showPagiSubject.getValue().length - 1].pagiText
+        }} </span>
     </div>
-    <button class="btn btn-yellow">Next</button>
+    <button class="btn btn-yellow"
+            (click)="getTransactions(pagiId + 1);"
+            [disabled]="pagiId === maxPages">Next</button>
   </div>
 </div>
