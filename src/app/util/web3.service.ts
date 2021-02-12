@@ -66,6 +66,21 @@ export class Web3Service {
     return contract;
   }
 
+  public async getTransaction(id) {
+    const transaction = await this.contract.methods.transactions(id).call();
+    const confirmations = await this.contract.methods.getConfirmationCount(id).call();
+    const txinfo = transaction[0].split(',');
+    return {
+      type: txinfo[0],
+      account: txinfo[1],
+      // tslint:disable-next-line:max-line-length
+      amount: txinfo[0] === 'Mint for' ? txinfo[2] * Math.pow(10, 10) + ' tokens' : (txinfo[0] === 'Return deposit' ? txinfo[2] * Math.pow(10, 18) + ' wei' : txinfo[2]),
+      confirmations: confirmations,
+      id: id,
+      executed: transaction.executed
+    };
+  }
+
   public async getTransactions(pagiNum) {
     await this.loadContract();
 
@@ -197,6 +212,7 @@ export class Web3Service {
     // tslint:disable-next-line:max-line-length
     if (!this.accountSubject.getValue() || this.accountSubject.getValue().length !== accs.length || this.accountSubject.getValue()[0] !== accs[0]) {
       console.log('Observed new accounts');
+      this.submittedSubject.next(true);
 
       await this.loadContract();
 

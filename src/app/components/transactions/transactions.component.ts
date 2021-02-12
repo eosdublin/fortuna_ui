@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { Web3Service } from '../../util/web3.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 

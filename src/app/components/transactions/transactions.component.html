@@ -7,7 +7,7 @@
         <span class="pr-3">{{trans.type}}</span>
       </div>
       <div class="operation d-flex align-items-center mt-3" style="height: 46px; font-size: 14px;">
-        <span>Transaction id: {{trans.id}}</span>
+        <span>Transaction id: <a [routerLink]="'/transaction/' + trans.id">{{trans.id}}</a></span>
       </div>
     </div>
     <div class="wrapper-col">
@@ -71,3 +71,5 @@
             [disabled]="pagiId === maxPages">Next</button>
   </div>
 </div>
+
+<router-outlet></router-outlet>
