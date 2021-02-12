@@ -128,7 +128,7 @@ export class Web3Service {
           type: txinfo[0],
           account: txinfo[1],
           // tslint:disable-next-line:max-line-length
-          amount: txinfo[0] === 'Mint for' ? txinfo[2] * Math.pow(10, 10) + ' tokens' : (txinfo[0] === 'Return deposit' ? txinfo[2] * Math.pow(10, 18) + ' wei' : txinfo[2]),
+          amount: txinfo[0] === 'Mint for' ? txinfo[2] + ' tokens' : (txinfo[0] === 'Return deposit' ? txinfo[2] + ' ETH' : txinfo[2]),
           confirmations: confirmations,
           id: id,
           executed: transaction.executed
@@ -143,7 +143,7 @@ export class Web3Service {
           type: txinfo[0],
           account: txinfo[1],
           // tslint:disable-next-line:max-line-length
-          amount: txinfo[0] === 'Mint for' ? txinfo[2] * Math.pow(10, 10) + ' tokens' : (txinfo[0] === 'Return deposit' ? txinfo[2] * Math.pow(10, 18) + ' wei' : txinfo[2]),
+          amount: txinfo[0] === 'Mint for' ? txinfo[2] + ' tokens' : (txinfo[0] === 'Return deposit' ? txinfo[2] + ' ETH' : txinfo[2]),
           confirmations: confirmations,
           id: id,
           executed: transaction.executed
