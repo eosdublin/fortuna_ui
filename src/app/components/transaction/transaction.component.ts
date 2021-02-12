@@ -13,6 +13,7 @@ export class TransactionComponent implements OnInit {
 
   public transaction: any;
   public trans: any;
+  public ifConnected: boolean = false;
 
   constructor(public web3Service: Web3Service) {
 
@@ -21,10 +22,21 @@ export class TransactionComponent implements OnInit {
         this.getTransaction();
       }
     });
+
+    web3Service.accountSubject.subscribe(accs => {
+      if (accs.length) {
+        this.ifConnected = true
+        this.getTransaction()
+      }
+    })
   }
 
   async ngOnInit() {
     if (this.web3Service.accountSubject.getValue().length) this.getTransaction()
+  }
+
+  connect() {
+    this.web3Service.bootstrapWeb3();
   }
 
   async getTransaction() {

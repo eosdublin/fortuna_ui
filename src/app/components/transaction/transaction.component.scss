@@ -1,9 +1,5 @@
 .wrapper{
-  margin-top: 55px;
-
-  & + .wrapper{
-    margin-top: 20px;
-  }
+  margin-top: 20px;
 
   .read-only{
     background-color: #e9ecef;
@@ -30,4 +26,14 @@
 
   }
 
+}
+
+.login-btn{
+  width: 200px;
+  height: 40px;
+  background-color: #012F67;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  margin-left: 50px;
 }
