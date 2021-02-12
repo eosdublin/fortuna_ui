@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { ComponentsModule } from "./components/components.module";
@@ -15,7 +16,11 @@ import {
   MatInputModule,
   MatToolbarModule
 } from '@angular/material';
+import {ModalContainerComponent} from "./components/modal-container/modal-container.component";
 
+const routes: Routes = [
+  { path: 'transaction/:id', component: ModalContainerComponent }
+];
 
 @NgModule({
   declarations: [
@@ -33,7 +38,8 @@ import {
     FormsModule,
     HttpClientModule,
     ComponentsModule,
-    UtilModule
+    UtilModule,
+    RouterModule.forRoot(routes),
   ],
   providers: [],
   bootstrap: [AppComponent]

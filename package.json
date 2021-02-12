@@ -26,6 +26,7 @@
     "@angular/platform-server": "10.2.4",
     "@angular/router": "10.2.4",
     "@metamask/detect-provider": "^1.2.0",
+    "@ng-bootstrap/ng-bootstrap": "^9.0.2",
     "@ng-select/ng-select": "^6.0.0",
     "@truffle/contract": "^4.3.6",
     "bootstrap": "^4.6.0",
