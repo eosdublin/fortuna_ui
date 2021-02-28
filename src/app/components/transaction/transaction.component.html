@@ -28,7 +28,7 @@
           <div class="d-flex justify-content-between">
             <span>{{transaction?.type === 'Replace signer' ? 'New signer' : 'Amount'}}</span>
             <span *ngIf="transaction?.executed" style="color: green">Confirmed</span>
-            <span *ngIf="!transaction?.executed && transaction?.confirmations > 4" style="color: darkred">Failed</span>
+            <span *ngIf="!transaction?.executed && transaction?.confirmations > 2" style="color: darkred">Failed</span>
           </div>
           <input type="text" readonly
                  style="font-size: 14px;color: #8181A5;"

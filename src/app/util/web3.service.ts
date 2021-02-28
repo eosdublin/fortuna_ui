@@ -176,7 +176,7 @@ export class Web3Service {
       let gas = await this.contract.methods.confirmTransaction(id)
         .estimateGas({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice});
 
-      if (confirms.toString() >= '4') {
+      if (confirms.toString() >= '2') {
         gas = 250000
       }
       await this.contract.methods.confirmTransaction(id)
