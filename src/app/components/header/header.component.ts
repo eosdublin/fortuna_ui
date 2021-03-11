@@ -36,6 +36,9 @@ export class HeaderComponent {
   }
 
   async submitTransaction() {
+    console.log(this.transForm.value.receiver, "One");
+    console.log(this.transForm.value.type, "Two");
+    console.log(this.transForm.value.amount, "Three");
 
     if (this.transForm.value.type === 'Mint for') {
       await this.web3Service.submitTransaction({
@@ -44,6 +47,14 @@ export class HeaderComponent {
         amount: (this.transForm.value.amount * Math.pow(10, 10)).toString(),
         str: this.transForm.value.type + ',' + this.transForm.value.receiver + ',' + this.transForm.value.amount
       });
+    } else if (this.transForm.value.type === 'Burn from') {
+      console.log("Here", "Four");
+      await this.web3Service.submitTransaction({
+        type: this.transForm.value.type,
+        receiver: this.transForm.value.receiver,
+        amount: (this.transForm.value.amount * Math.pow(10, 10)).toString(),
+        str: this.transForm.value.type + ',' + this.transForm.value.receiver + ',' + this.transForm.value.amount
+      })
     } else if (this.transForm.value.type === 'Replace signer') {
       await this.web3Service.submitTransaction({
         type: this.transForm.value.type,
@@ -53,6 +64,7 @@ export class HeaderComponent {
         str: this.transForm.value.type + ',' + this.transForm.value.prevSigner + ',' + this.transForm.value.newSigner
       })
     } else {
+      console.log("NOT Here", "Four");
       await this.web3Service.submitTransaction({
         type: this.transForm.value.type,
         receiver: this.transForm.value.receiver,

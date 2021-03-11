@@ -24,15 +24,16 @@
                formControlName="type"
                [searchable]="false">
       <ng-option [value]="'Mint for'">Mint for</ng-option>
+      <ng-option [value]="'Burn from'">Burn from</ng-option>
       <ng-option [value]="'Replace signer'">Replace signer</ng-option>
       <ng-option [value]="'Return deposit'">Return deposit</ng-option>
     </ng-select>
   </div>
   <div class="wrapper-col">
     <div class="form-group">
-      <span *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Return deposit'">{{"Receiver"}}</span>
+      <span *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Burn from' || transForm.value.type === 'Return deposit'">{{"Receiver"}}</span>
       <span *ngIf="transForm.value.type === 'Replace signer'">{{"Previous"}}</span>
-      <input type="text" *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Return deposit'"
+      <input type="text" *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Burn from' || transForm.value.type === 'Return deposit'"
              [ngClass]="{'border-danger': transForm.controls['receiver'].invalid && transForm.controls['receiver'].touched}"
              class="form-control mt-2"
              formControlName="receiver"
@@ -45,11 +46,11 @@
   </div>
   <div class="wrapper-col">
     <div class="form-group">
-      <span *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Return deposit'">{{"Amount"}}</span>
+      <span *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Burn from' || transForm.value.type === 'Return deposit'">{{"Amount"}}</span>
       <span *ngIf="transForm.value.type === 'Replace signer'">{{"New signer"}}</span>
       <input type="number"
              min="0"
-             *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Return deposit'"
+             *ngIf="transForm.value.type === 'Mint for' || transForm.value.type === 'Burn from' || transForm.value.type === 'Return deposit'"
              [ngClass]="{'border-danger': !transForm.value.amount && transForm.controls['amount'].touched}"
              class="form-control mt-2 mb-3"
              formControlName="amount"
