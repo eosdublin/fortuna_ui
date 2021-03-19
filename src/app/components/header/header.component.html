@@ -2,10 +2,10 @@
   <span class="title mr-auto">Fortuna Minting Panel</span>
   <div class="d-flex align-items-center">
     <span class="toggle-span" (click)="toggle = false; web3Service.disconnect()">TEST NET</span>
-    <div class="toggle-wrap ml-2 mr-2" (click)="toggle = !toggle; web3Service.disconnect()">
+    <div class="toggle-wrap ml-2 mr-2" (click)="toggle = !toggle; web3Service.reconnect(false)">
       <div class="toggle-btn" [style.left]="!toggle ? '3px' : '21px'"></div>
     </div>
-    <span class="toggle-span" (click)="toggle = true; web3Service.disconnect()">MAIN NET</span>
+    <span class="toggle-span" (click)="toggle = true; web3Service.reconnect(true)">MAIN NET</span>
   </div>
   <button *ngIf="!ifConnected" (click)="connect()" class="btn login-btn">Connect MetaMask</button>
   <ng-select class="login-select"

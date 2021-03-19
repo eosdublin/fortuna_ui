@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import detectEthereumProvider from '@metamask/detect-provider';
 
 const Web3 = require('web3');
 const contract = require('@truffle/contract');
@@ -10,6 +9,7 @@ const abi = require('../abi/abi.json');
 import WNDAU from '../abi/wNDAU.json';
 import multsigWallet from '../abi/MultiSigWallet.json';
 import config from '../configs/config.json';
+import {logger} from "codelyzer/util/logger";
 
 declare let require: any;
 declare let window: any;
@@ -19,6 +19,7 @@ export class Web3Service {
   private web3: any;
   public contract: any;
   public refresh: any;
+  private tumbler: boolean = true;
 
   public accountSubject: BehaviorSubject<string[]> = new BehaviorSubject([]);
   public accountsObservable: Observable<any> = this.accountSubject.asObservable();
@@ -61,8 +62,15 @@ export class Web3Service {
     this.accountSubject.next([]);
   }
 
+  async reconnect(tumbler) {
+    this.tumbler = tumbler;
+    await this.web3.eth.net.getNetworkType()
+      .then(console.log);
+    this.bootstrapWeb3();
+  }
+
   public async loadContract() {
-    this.contract = new this.web3.eth.Contract(abi.result, config.testNetMultisig);
+    this.contract = new this.web3.eth.Contract(abi.result, this.tumbler ? config.mainNetMultisig : config.testNetMultisig);
     return contract;
   }
 
@@ -161,8 +169,13 @@ export class Web3Service {
     console.log(formData.str, 4);
     const data = await this.askQuestions(formData);
     console.log(data, 5);
-    const addr = (formData.type === 'Mint for' || formData.type === 'Burn from') ? config.testNetToken : config.testNetMultisig;
+    let addr = null;
 
+    if (this.tumbler) {
+      addr = (formData.type === 'Mint for' || formData.type === 'Burn from') ? config.mainNetToken : config.mainNetMultisig;
+    } else {
+      addr = (formData.type === 'Mint for' || formData.type === 'Burn from') ? config.testNetToken : config.testNetMultisig;
+    }
     try {
       const gas = await this.contract.methods.submitTransaction(formData.str, addr, 0, data)
         .estimateGas({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice});

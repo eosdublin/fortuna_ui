@@ -9,7 +9,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 })
 export class HeaderComponent {
 
-  public toggle: boolean = false;
+  public toggle: boolean = true;
   public ifConnected: boolean = false;
   public accAddress: string
   public transForm : FormGroup;
