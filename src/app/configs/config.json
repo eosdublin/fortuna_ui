@@ -1,6 +1,6 @@
 {
-  "testNetMultisig": "0x8ab7F28a9aB5e715876eD6C925F9171f2a4DF6E7",
-  "testNetToken": "0xa08De1Aa11a26a7f95cDC5B75a367914B6Df2F58",
-  "mainNetMultisig": "",
-  "mainNetToken": ""
+  "testNetMultisig": "0x886096423f2989d98b30cfd239ceff75f2ce31ae",
+  "testNetToken": "0x9882965beee1984e69a139dec0b244d4d9a15226",
+  "mainNetMultisig": "0xC037fBD2d1BC9b38318671694D4Dd0B9ae1E8383",
+  "mainNetToken": "0xAC0b5973fCc16fa2Ef8C3859C7C29eB6f050fB0c"
 }

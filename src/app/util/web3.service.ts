@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import detectEthereumProvider from '@metamask/detect-provider';
 
 const Web3 = require('web3');
 const contract = require('@truffle/contract');
@@ -10,6 +9,7 @@ const abi = require('../abi/abi.json');
 import WNDAU from '../abi/wNDAU.json';
 import multsigWallet from '../abi/MultiSigWallet.json';
 import config from '../configs/config.json';
+import {logger} from "codelyzer/util/logger";
 
 declare let require: any;
 declare let window: any;
@@ -19,6 +19,7 @@ export class Web3Service {
   private web3: any;
   public contract: any;
   public refresh: any;
+  private tumbler: boolean = true;
 
   public accountSubject: BehaviorSubject<string[]> = new BehaviorSubject([]);
   public accountsObservable: Observable<any> = this.accountSubject.asObservable();
@@ -61,8 +62,15 @@ export class Web3Service {
     this.accountSubject.next([]);
   }
 
+  async reconnect(tumbler) {
+    this.tumbler = tumbler;
+    await this.web3.eth.net.getNetworkType()
+      .then(console.log);
+    this.bootstrapWeb3();
+  }
+
   public async loadContract() {
-    this.contract = new this.web3.eth.Contract(abi.result, config.testNetMultisig);
+    this.contract = new this.web3.eth.Contract(abi.result, this.tumbler ? config.mainNetMultisig : config.testNetMultisig);
     return contract;
   }
 
@@ -74,7 +82,7 @@ export class Web3Service {
       type: txinfo[0],
       account: txinfo[1],
       // tslint:disable-next-line:max-line-length
-      amount: txinfo[0] === 'Mint for' ? txinfo[2] * Math.pow(10, 10) + ' tokens' : (txinfo[0] === 'Return deposit' ? txinfo[2] * Math.pow(10, 18) + ' wei' : txinfo[2]),
+      amount: (txinfo[0] === 'Mint for' || txinfo[0] === 'Burn from') ? txinfo[2] + ' wNDAU' : (txinfo[0] === 'Return deposit' ? txinfo[2] + ' ETH' : txinfo[2]),
       confirmations: confirmations,
       id: id,
       executed: transaction.executed
@@ -128,14 +136,14 @@ export class Web3Service {
           type: txinfo[0],
           account: txinfo[1],
           // tslint:disable-next-line:max-line-length
-          amount: txinfo[0] === 'Mint for' ? txinfo[2] + ' tokens' : (txinfo[0] === 'Return deposit' ? txinfo[2] + ' ETH' : txinfo[2]),
+          amount: (txinfo[0] === 'Mint for' || txinfo[0] === 'Burn from') ? txinfo[2] + ' wNDAU' : (txinfo[0] === 'Return deposit' ? txinfo[2] + ' ETH' : txinfo[2]),
           confirmations: confirmations,
           id: id,
           executed: transaction.executed
         });
       }
     } else {
-      for (let id = 0; id < transCount; id++) {
+      for (let id = transCount - 1; id >= 0; id--) {
         const transaction = await this.contract.methods.transactions(id).call();
         const confirmations = await this.contract.methods.getConfirmationCount(id).call();
         const txinfo = transaction[0].split(',');
@@ -143,7 +151,7 @@ export class Web3Service {
           type: txinfo[0],
           account: txinfo[1],
           // tslint:disable-next-line:max-line-length
-          amount: txinfo[0] === 'Mint for' ? txinfo[2] + ' tokens' : (txinfo[0] === 'Return deposit' ? txinfo[2] + ' ETH' : txinfo[2]),
+          amount: (txinfo[0] === 'Mint for' || txinfo[0] === 'Burn from') ? txinfo[2] + ' wNDAU' : (txinfo[0] === 'Return deposit' ? txinfo[2] + ' ETH' : txinfo[2]),
           confirmations: confirmations,
           id: id,
           executed: transaction.executed
@@ -155,10 +163,19 @@ export class Web3Service {
   }
 
   public async submitTransaction(formData) {
-
+    console.log(formData.type, 1);
+    console.log(formData.receiver, 2);
+    console.log(formData.amount, 3);
+    console.log(formData.str, 4);
     const data = await this.askQuestions(formData);
-    const addr = formData.type === 'Mint for' ? config.testNetToken : config.testNetMultisig;
+    console.log(data, 5);
+    let addr = null;
 
+    if (this.tumbler) {
+      addr = (formData.type === 'Mint for' || formData.type === 'Burn from') ? config.mainNetToken : config.mainNetMultisig;
+    } else {
+      addr = (formData.type === 'Mint for' || formData.type === 'Burn from') ? config.testNetToken : config.testNetMultisig;
+    }
     try {
       const gas = await this.contract.methods.submitTransaction(formData.str, addr, 0, data)
         .estimateGas({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice});
@@ -176,8 +193,8 @@ export class Web3Service {
       let gas = await this.contract.methods.confirmTransaction(id)
         .estimateGas({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice});
 
-      if (confirms.toString() >= '4') {
-        gas = 250000
+      if (confirms.toString() >= '2') {
+        gas = 260000
       }
       await this.contract.methods.confirmTransaction(id)
         .send({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice, gas: gas});
@@ -227,8 +244,12 @@ export class Web3Service {
     const wndau = new this.web3.eth.Contract(WNDAU);
     const multisig = new this.web3.eth.Contract(multsigWallet);
 
+    console.log("THERE");
     if (formData.type === 'Mint for') {
       encodedData = await wndau.methods.mintFor(formData.receiver, formData.amount).encodeABI();
+    } else if (formData.type === 'Burn from') {
+      console.log("THERETHERE");
+      encodedData = await wndau.methods.burnFrom(formData.receiver, formData.amount).encodeABI();
     } else if (formData.type === 'Replace signer') {
       encodedData = await multisig.methods.replaceSigner(formData.prevSigner, formData.newSigner).encodeABI();
     } else {

@@ -28,7 +28,11 @@
           <div class="d-flex justify-content-between">
             <span>{{transaction?.type === 'Replace signer' ? 'New signer' : 'Amount'}}</span>
             <span *ngIf="transaction?.executed" style="color: green">Confirmed</span>
+<<<<<<< HEAD
             <span *ngIf="!transaction?.executed && transaction?.confirmations > 4" style="color: darkred">Failed</span>
+=======
+            <span *ngIf="!transaction?.executed && transaction?.confirmations > 2" style="color: darkred">Failed</span>
+>>>>>>> 9b83bd61af4db47ad400575316147ca13d8aa90c
           </div>
           <input type="text" readonly
                  style="font-size: 14px;color: #8181A5;"
@@ -39,7 +43,11 @@
           <button class="btn btn-yellow"
                   [disabled]="!ifConnected"
                   (click)="confirmTransaction(transaction?.id, transaction?.confirmations)">Confirm</button>
+<<<<<<< HEAD
           <span class="ml-auto">{{transaction?.confirmations}} of 5</span>
+=======
+          <span class="ml-auto">{{transaction?.confirmations}} of 3</span>
+>>>>>>> 9b83bd61af4db47ad400575316147ca13d8aa90c
         </div>
       </div>
     </div>
