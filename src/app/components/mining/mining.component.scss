@@ -1,0 +1,66 @@
+.forms-wrapper{
+  margin: 25px 0;
+
+  .row {
+    margin: 0;
+  }
+
+  .wrapper {
+    width: 60%;
+    flex-direction: column;
+    height: 395px;
+
+    & + .wrapper {
+      width: calc(40% - 50px);
+      margin-left: 50px;
+    }
+
+    span {
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    .stake-form {
+      width: 350px;
+      margin-top: 40px;
+    }
+
+    .stake-value {
+      font-size: 22px;
+    }
+
+    .timer {
+      margin-top: 10px;
+
+      .colon {
+        margin: 0 7px 15px;
+        font-size: 22px;
+      }
+
+      .timer-title {
+        font-size: 9px;
+        color: #a9a9a9;
+        text-transform: lowercase;
+      }
+
+      .timer-block {
+        padding: 13px;
+        border-radius: 8px;
+        border: 1px solid #B4BBD9;
+        width: 65px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        span {
+          font-size: 22px;
+        }
+
+      }
+
+    }
+
+  }
+
+}
