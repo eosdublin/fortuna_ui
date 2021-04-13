@@ -22,8 +22,8 @@ import { TransactionsComponent } from './components/transactions/transactions.co
 
 const routes: Routes = [
   { path: 'transaction/:id', component: ModalContainerComponent },
-  { path: '', component: TransactionsComponent },
-  { path: 'liquidity-mining', component: MiningComponent }
+  { path: 'transactions', component: TransactionsComponent },
+  { path: '', component: MiningComponent }
 ];
 
 @NgModule({

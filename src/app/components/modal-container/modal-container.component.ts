@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import { Subject} from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import {TransactionComponent} from "../transaction/transaction.component";
+import { TransactionComponent } from '../transaction/transaction.component';
 
 @Component({
   selector: 'app-modal-container',
@@ -22,13 +22,13 @@ export class ModalContainerComponent implements OnDestroy, OnInit {
 
   ngOnInit() {
     this.route.params.pipe(takeUntil(this.destroy)).subscribe(params => {
-      this.currentDialog = this.modalService.open(TransactionComponent, {centered: true, size: "lg"});
+      this.currentDialog = this.modalService.open(TransactionComponent, {centered: true, size: 'lg'});
       this.currentDialog.componentInstance.transactionId = params.id;
 
       this.currentDialog.result.then(result => {
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/transactions');
       }, reason => {
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/transactions');
       });
     });
   }

@@ -1,6 +1,6 @@
 <div class="d-flex align-items-center header-wrap">
-  <span class="title mr-auto">Fortuna Minting Panel</span>
-  <div class="d-flex align-items-center">
+  <span class="title mr-auto">{{url && url !== '/' ? 'Fortuna Minting Panel' : 'Fortuna Liquidity Mining Program'}}</span>
+  <div *ngIf="url && url !== '/'" class="d-flex align-items-center">
     <span class="toggle-span" (click)="toggle = false; web3Service.disconnect()">TEST NET</span>
     <div class="toggle-wrap ml-2 mr-2" (click)="toggle = !toggle; web3Service.reconnect(false)">
       <div class="toggle-btn" [style.left]="!toggle ? '3px' : '21px'"></div>
@@ -16,7 +16,7 @@
   </ng-select>
 </div>
 
-<form [formGroup]="transForm" novalidate class="wrapper">
+<form *ngIf="url && url !== '/'" [formGroup]="transForm" novalidate class="wrapper">
   <div class="wrapper-col">
     <span>Operation</span>
     <ng-select class="mt-2 operation-select"
