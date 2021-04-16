@@ -19,6 +19,7 @@ export class MiningComponent implements OnInit {
   public signerSubject: BehaviorSubject<any> = new BehaviorSubject(false);
   public signer$: Observable<any> = this.signerSubject.asObservable();
   public stakeForm: FormGroup;
+  public canClaim = false;
 
   constructor(
     private web3Service: Web3Service,
@@ -80,7 +81,6 @@ export class MiningComponent implements OnInit {
   }
 
   stake() {
-    // console.log((this.stakeForm.value.stake * Math.pow(10, 18)).toString());
     this.web3Service.stake((this.stakeForm.value.stake * Math.pow(10, 18)).toString());
   }
 
@@ -89,7 +89,9 @@ export class MiningComponent implements OnInit {
   }
 
   unstake() {
-    this.web3Service.unstake();
+    if (confirm('Are you sure you want to unstake?')) {
+      this.web3Service.unstake();
+    }
   }
 
   async isSigner() {

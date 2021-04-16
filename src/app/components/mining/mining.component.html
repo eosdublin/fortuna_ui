@@ -4,7 +4,7 @@
       <div class="d-flex flex-column flex-lg-row align-items-lg-start align-items-lg-center justify-content-between mb-3">
         <div class="d-flex flex-column mb-2 mb-lg-0">
           <span>total stake</span>
-          <span class="stake-value">{{totalStaked}} WNDAU</span>
+          <span class="stake-value">{{totalStaked}} WNDAU/USDC pair</span>
         </div>
         <div class="d-flex flex-column">
           <span>reward pool</span>
@@ -49,7 +49,7 @@
           <input type="text"
                  class="form-control"
                  formControlName="stake"
-                 placeholder="1 WNDAU">
+                 placeholder="1 WNDAU/USDC">
           <button class="btn btn-yellow ml-3" [disabled]="!stakeForm.valid" (click)="stake()">Stake</button>
         </div>
       </div>
@@ -57,7 +57,7 @@
     <div class="wrapper">
       <div class="d-flex flex-column mb-4">
         <span>your stake</span>
-        <span class="stake-value">{{yourStake}} WNDAU</span>
+        <span class="stake-value">{{yourStake}} WNDAU/USDC pair</span>
       </div>
       <div class="d-flex flex-column mb-4">
         <span>your reward</span>
@@ -97,9 +97,10 @@
       </div>
       <div class="d-flex mt-auto">
         <button class="btn btn-yellow mr-2" (click)="unstake()">Unstake</button>
-        <button class="btn btn-yellow ml-2" (click)="claim()">Claim</button>
+        <button [disabled]="(cooldown !== 0) || (yourReward === '0')" class="btn btn-yellow ml-2" (click)="claim()">Claim</button>
       </div>
     </div>
   </div>
   <button *ngIf="signer$ | async" class="btn btn-yellow to-trans" (click)="toTransactions()">To transactions</button>
 </div>
+

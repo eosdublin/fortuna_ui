@@ -1,5 +1,5 @@
 <div class="d-flex align-items-center header-wrap">
-  <span class="title mr-auto">{{url && url !== '/' ? 'Fortuna Minting Panel' : 'Fortuna Liquidity Mining Program'}}</span>
+  <span class="title mr-auto">{{url && url !== '/' ? 'Fortuna Minting Panel' : 'WNDAU Liquidity Mining Program'}}</span>
   <div *ngIf="url && url !== '/'" class="d-flex align-items-center">
     <span class="toggle-span" (click)="toggle = false; web3Service.disconnect()">TEST NET</span>
     <div class="toggle-wrap ml-2 mr-2" (click)="toggle = !toggle; web3Service.reconnect(false)">
