@@ -13,7 +13,7 @@
   .wrapper {
     width: 60%;
     flex-direction: column;
-    min-height: 395px;
+    min-height: 440px;
 
     & + .wrapper {
       width: calc(40% - 50px);
@@ -70,6 +70,20 @@
 
 }
 
+@media screen and (max-width: 1200px) {
+  .wrapper {
+
+    .timer-block {
+      width: 45px !important;
+    }
+
+    .stake-value {
+      font-size: 20px!important;
+    }
+
+  }
+}
+
 @media screen and (max-width: 768px) {
 
   .wrapper {
@@ -85,18 +99,6 @@
       font-size: 18px!important;
     }
 
-    .timer-block {
-      width: 60px!important;
-    }
-
-  }
-
-}
-
-@media screen and (max-width: 320px) {
-
-  .wrapper .timer .timer-block {
-    width: 48px!important;
   }
 
 }

@@ -135,4 +135,8 @@ export class MiningComponent implements OnInit {
     this.router.navigate(['transactions']);
   }
 
+  calcAPY() {
+
+  }
+
 }

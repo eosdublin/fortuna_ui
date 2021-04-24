@@ -27,6 +27,7 @@
       <ng-option [value]="'Burn from'">Burn from</ng-option>
       <ng-option [value]="'Replace signer'">Replace signer</ng-option>
       <ng-option [value]="'Return deposit'">Return deposit</ng-option>
+      <ng-option [value]="'Set rewards'">Set rewards period</ng-option>
     </ng-select>
   </div>
   <div class="wrapper-col">
@@ -60,7 +61,10 @@
              class="form-control mt-2 mb-3"
              formControlName="newSigner"
              placeholder="Address">
-      <button class="btn btn-yellow" [disabled]="!transForm.valid || !web3Service.accountSubject.getValue().length" (click)="submitTransaction()">Submit</button>
     </div>
+    <button class="btn btn-yellow"
+            [ngClass]="{'mt-3': transForm.value.type === 'Set rewards'}"
+            [disabled]="!transForm.valid || !web3Service.accountSubject.getValue().length"
+            (click)="submitTransaction()">Submit</button>
   </div>
 </form>

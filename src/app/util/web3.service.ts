@@ -11,7 +11,7 @@ const Web3 = require('web3');
 const contract = require('@truffle/contract');
 
 const abi = require('../abi/abi.json');
-const stakingAbi = require('../abi/stakingAbi.json');
+const stakingAbi = require('../abi/StakingAbi.json');
 const ierc20Abi = require('../abi/ierc20Abi.json');
 const wndauAbi = require('../abi/wndauAbi.json');
 
@@ -247,6 +247,7 @@ export class Web3Service {
 
     const wndau = new this.web3.eth.Contract(WNDAU);
     const multisig = new this.web3.eth.Contract(multsigWallet);
+    const staking = new this.web3.eth.Contract(stakingAbi);
 
     console.log('THERE');
     if (formData.type === 'Mint for') {
@@ -256,6 +257,8 @@ export class Web3Service {
       encodedData = await wndau.methods.burnFrom(formData.receiver, formData.amount).encodeABI();
     } else if (formData.type === 'Replace signer') {
       encodedData = await multisig.methods.replaceSigner(formData.prevSigner, formData.newSigner).encodeABI();
+    } else if (formData.type === 'Set rewards') {
+      encodedData = await staking.methods.setNextPeriod().encodeABI();
     } else {
       encodedData = await multisig.methods.returnDeposit(formData.receiver, formData.amount).encodeABI();
     }

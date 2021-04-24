@@ -81,6 +81,11 @@ export class HeaderComponent implements OnInit {
         amount: 0,
         str: this.transForm.value.type + ',' + this.transForm.value.prevSigner + ',' + this.transForm.value.newSigner
       });
+    } else if (this.transForm.value.type === 'Set rewards') {
+      await this.web3Service.submitTransaction({
+        type: this.transForm.value.type,
+        str: this.transForm.value.type
+      })
     } else {
       console.log('NOT Here', 'Four');
       await this.web3Service.submitTransaction({
