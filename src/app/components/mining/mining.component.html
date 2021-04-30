@@ -48,7 +48,7 @@
           <span class="mr-4">stake now</span>
           <span>APY: {{yourReward !== '0' ? rewardPull / yourReward * stakeForm.value.stake : 0}}</span>
         </div>
-        <div class="d-flex align-items-center" [formGroup]="stakeForm">
+        <div class="d-flex align-items-center" [formGroup]="stakeForm" style="margin-top: 10px;">
           <input type="text"
                  class="form-control"
                  formControlName="stake"
