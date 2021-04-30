@@ -175,11 +175,16 @@ export class Web3Service {
     console.log(data, 5);
     let addr = null;
 
-    if (this.tumbler) {
+    if (this.tumbler && formData) {
       addr = (formData.type === 'Mint for' || formData.type === 'Burn from') ? config.mainNetToken : config.mainNetMultisig;
     } else {
       addr = (formData.type === 'Mint for' || formData.type === 'Burn from') ? config.testNetToken : config.testNetMultisig;
     }
+
+    if (formData.type === 'Set rewards') {
+      addr = config.stacking
+    }
+
     try {
       const gas = await this.contract.methods.submitTransaction(formData.str, addr, 0, data)
         .estimateGas({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice});
