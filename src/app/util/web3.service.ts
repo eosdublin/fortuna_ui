@@ -243,6 +243,8 @@ export class Web3Service {
       await this.loadContract();
 
       this.accountSubject.next(accs);
+
+      this.web3.eth.getBalance(accs[0]).then(console.log);
     }
 
   }
@@ -343,5 +345,10 @@ export class Web3Service {
   async isSigner() {
     const multisig = new this.web3.eth.Contract(abi, config.testNetMultisig);
     return await multisig.methods.isSigner(this.accountSubject.getValue()[0]).call();
+  }
+
+  async getBalance() {
+    const ierc20 = new this.web3.eth.Contract(ierc20Abi, config.IERC20);
+    return await ierc20.methods.balanceOf(this.accountSubject.getValue()[0]).call();
   }
 }

@@ -20,6 +20,7 @@ export class MiningComponent implements OnInit {
   public signer$: Observable<any> = this.signerSubject.asObservable();
   public stakeForm: FormGroup;
   public canClaim = false;
+  public yourBalance = 0;
 
   constructor(
     private web3Service: Web3Service,
@@ -42,6 +43,7 @@ export class MiningComponent implements OnInit {
       if (accs.length) {
         this.getYourStake(accs[0]);
         this.getYourReward(accs[0]);
+        this.balance();
         this.isSigner();
       }
     });
@@ -135,8 +137,8 @@ export class MiningComponent implements OnInit {
     this.router.navigate(['transactions']);
   }
 
-  calcAPY() {
-
+  async balance() {
+    this.yourBalance = await this.web3Service.getBalance();
   }
 
 }
