@@ -83,7 +83,8 @@ export class MiningComponent implements OnInit {
   }
 
   stake() {
-    this.web3Service.stake((this.stakeForm.value.stake * Math.pow(10, 18)).toString());
+    console.log((this.stakeForm.value.stake * Math.pow(10, 18)).toLocaleString('fullwide', {useGrouping:false}));
+    this.web3Service.stake((this.stakeForm.value.stake * Math.pow(10, 18)).toLocaleString('fullwide', {useGrouping:false}));
   }
 
   claim() {

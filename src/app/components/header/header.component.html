@@ -2,11 +2,11 @@
   <img class="mr-auto" src="./assets/logo.svg" alt="">
 <!--  <span class="title mr-auto">{{url && url !== '/' ? 'Fortuna Minting Panel' : 'WNDAU Liquidity Mining Program'}}</span>-->
   <div *ngIf="url && url !== '/'" class="d-flex align-items-center">
-    <span class="toggle-span" (click)="toggle = false; web3Service.disconnect()">TEST NET</span>
-    <div class="toggle-wrap ml-2 mr-2" (click)="toggle = !toggle; web3Service.reconnect(false)">
+    <span class="toggle-span" (click)="changeConnection(false)">TEST NET</span>
+    <div class="toggle-wrap ml-2 mr-2" (click)="changeConnection(!toggle)">
       <div class="toggle-btn" [style.left]="!toggle ? '3px' : '21px'"></div>
     </div>
-    <span class="toggle-span" (click)="toggle = true; web3Service.reconnect(true)">MAIN NET</span>
+    <span class="toggle-span" (click)="changeConnection(true)">MAIN NET</span>
   </div>
   <button *ngIf="!ifConnected" (click)="connect()" class="btn login-btn">Connect MetaMask</button>
   <ng-select class="login-select"

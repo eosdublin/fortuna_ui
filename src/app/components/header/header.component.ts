@@ -105,4 +105,10 @@ export class HeaderComponent implements OnInit {
     });
   }
 
+  changeConnection(value) {
+    this.toggle = value;
+    localStorage.setItem('connection', value);
+    this.web3Service.reconnect(value);
+  }
+
 }

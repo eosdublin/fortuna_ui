@@ -276,6 +276,7 @@ export class Web3Service {
   async stake (amount) {
     const staking = new this.web3.eth.Contract(stakingAbi, config.stacking);
     const ierc20 = new this.web3.eth.Contract(ierc20Abi, config.IERC20);
+    console.log(amount)
     try {
       const gas = await ierc20.methods.approve(config.stacking, amount)
         .estimateGas({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice});
@@ -299,7 +300,9 @@ export class Web3Service {
 
   async rewardPull() {
     const wndau = new this.web3.eth.Contract(wndauAbi, config.testNetToken);
-    return await wndau.methods.balanceOf(config.stacking).call();
+    const res = await wndau.methods.balanceOf(config.stacking).call();
+    console.log(res / Math.pow(10, 18));
+    return res / Math.pow(10, 18);
   }
 
   async yourStake(acc) {
