@@ -3,11 +3,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { Routes, RouterModule } from '@angular/router';
-
-import { AppComponent } from './app.component';
-import { ComponentsModule } from "./components/components.module";
+import { ComponentsModule } from './components/components.module';
 import { CommonModule } from '@angular/common';
-import { UtilModule } from "./util/util.module";
+import { UtilModule } from './util/util.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatButtonModule,
@@ -16,10 +14,16 @@ import {
   MatInputModule,
   MatToolbarModule
 } from '@angular/material';
-import {ModalContainerComponent} from "./components/modal-container/modal-container.component";
+
+import { AppComponent } from './app.component';
+import { ModalContainerComponent } from './components/modal-container/modal-container.component';
+import { MiningComponent } from './components/mining/mining.component';
+import { TransactionsComponent } from './components/transactions/transactions.component';
 
 const routes: Routes = [
-  { path: 'transaction/:id', component: ModalContainerComponent }
+  { path: 'transaction/:id', component: ModalContainerComponent },
+  { path: 'transactions', component: TransactionsComponent },
+  { path: '', component: MiningComponent }
 ];
 
 @NgModule({

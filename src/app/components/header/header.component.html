@@ -1,11 +1,12 @@
 <div class="d-flex align-items-center header-wrap">
-  <span class="title mr-auto">Fortuna Minting Panel</span>
-  <div class="d-flex align-items-center">
-    <span class="toggle-span" (click)="toggle = false; web3Service.disconnect()">TEST NET</span>
-    <div class="toggle-wrap ml-2 mr-2" (click)="toggle = !toggle; web3Service.reconnect(false)">
+  <img class="mr-auto" src="./assets/logo.svg" alt="">
+<!--  <span class="title mr-auto">{{url && url !== '/' ? 'Fortuna Minting Panel' : 'WNDAU Liquidity Mining Program'}}</span>-->
+  <div *ngIf="url && url !== '/'" class="d-flex align-items-center">
+    <span class="toggle-span" (click)="changeConnection(false)">TEST NET</span>
+    <div class="toggle-wrap ml-2 mr-2" (click)="changeConnection(!toggle)">
       <div class="toggle-btn" [style.left]="!toggle ? '3px' : '21px'"></div>
     </div>
-    <span class="toggle-span" (click)="toggle = true; web3Service.reconnect(true)">MAIN NET</span>
+    <span class="toggle-span" (click)="changeConnection(true)">MAIN NET</span>
   </div>
   <button *ngIf="!ifConnected" (click)="connect()" class="btn login-btn">Connect MetaMask</button>
   <ng-select class="login-select"
@@ -16,7 +17,7 @@
   </ng-select>
 </div>
 
-<form [formGroup]="transForm" novalidate class="wrapper">
+<form *ngIf="url && url !== '/'" [formGroup]="transForm" novalidate class="wrapper">
   <div class="wrapper-col">
     <span>Operation</span>
     <ng-select class="mt-2 operation-select"
@@ -27,6 +28,7 @@
       <ng-option [value]="'Burn from'">Burn from</ng-option>
       <ng-option [value]="'Replace signer'">Replace signer</ng-option>
       <ng-option [value]="'Return deposit'">Return deposit</ng-option>
+      <ng-option [value]="'Set rewards'">Set rewards period</ng-option>
     </ng-select>
   </div>
   <div class="wrapper-col">
@@ -60,7 +62,10 @@
              class="form-control mt-2 mb-3"
              formControlName="newSigner"
              placeholder="Address">
-      <button class="btn btn-yellow" [disabled]="!transForm.valid || !web3Service.accountSubject.getValue().length" (click)="submitTransaction()">Submit</button>
     </div>
+    <button class="btn btn-yellow"
+            [ngClass]="{'mt-3': transForm.value.type === 'Set rewards'}"
+            [disabled]="!transForm.valid || !web3Service.accountSubject.getValue().length"
+            (click)="submitTransaction()">Submit</button>
   </div>
 </form>

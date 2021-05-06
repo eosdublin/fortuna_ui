@@ -9,6 +9,7 @@ import {TransactionsComponent} from "./transactions/transactions.component";
 import { TransactionComponent } from './transaction/transaction.component';
 import {RouterModule} from "@angular/router";
 import { ModalContainerComponent } from './modal-container/modal-container.component';
+import { MiningComponent } from './mining/mining.component';
 
 
 
@@ -18,6 +19,7 @@ import { ModalContainerComponent } from './modal-container/modal-container.compo
     TransactionsComponent,
     TransactionComponent,
     ModalContainerComponent,
+    MiningComponent,
   ],
   imports: [
       CommonModule,
