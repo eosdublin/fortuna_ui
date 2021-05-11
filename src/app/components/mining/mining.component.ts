@@ -22,6 +22,7 @@ export class MiningComponent implements OnInit {
   public canClaim = false;
   public yourBalance = 0;
   public lowBalance = false;
+  public approving = false;
 
   constructor(
     private web3Service: Web3Service,
@@ -83,10 +84,12 @@ export class MiningComponent implements OnInit {
     this.rewardPull = await this.web3Service.rewardPull();
   }
 
-  stake() {
+  async stake() {
     this.checkBalance();
     if (!this.lowBalance) {
-      this.web3Service.stake((this.stakeForm.value.stake * Math.pow(10, 18)).toLocaleString('fullwide', {useGrouping: false}));
+      this.approving = true;
+      await this.web3Service.stake((this.stakeForm.value.stake * Math.pow(10, 18)).toLocaleString('fullwide', {useGrouping: false}))
+        .then( () => this.approving = false);
     }
   }
 
