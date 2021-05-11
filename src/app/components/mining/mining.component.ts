@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Web3Service} from '../../util/web3.service';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-mining',
@@ -21,6 +21,7 @@ export class MiningComponent implements OnInit {
   public stakeForm: FormGroup;
   public canClaim = false;
   public yourBalance = 0;
+  public lowBalance = false;
 
   constructor(
     private web3Service: Web3Service,
@@ -56,7 +57,7 @@ export class MiningComponent implements OnInit {
   async getTotalStaked() {
     try {
       const total = await this.web3Service.totalStaked();
-      this.totalStaked = Number.parseInt(total);
+      this.totalStaked = Number.parseInt(total) / Math.pow(10, 18);
     } catch (err) {
       console.log(err);
     }
@@ -64,7 +65,7 @@ export class MiningComponent implements OnInit {
 
   async getYourStake(acc) {
     try {
-      this.yourStake = await this.web3Service.yourStake(acc);
+      this.yourStake = await this.web3Service.yourStake(acc) / Math.pow(10, 18);
     } catch (err) {
       console.log(err);
     }
@@ -83,8 +84,10 @@ export class MiningComponent implements OnInit {
   }
 
   stake() {
-    console.log((this.stakeForm.value.stake * Math.pow(10, 18)).toLocaleString('fullwide', {useGrouping:false}));
-    this.web3Service.stake((this.stakeForm.value.stake * Math.pow(10, 18)).toLocaleString('fullwide', {useGrouping:false}));
+    this.checkBalance();
+    if (!this.lowBalance) {
+      this.web3Service.stake((this.stakeForm.value.stake * Math.pow(10, 18)).toLocaleString('fullwide', {useGrouping: false}));
+    }
   }
 
   claim() {
@@ -139,7 +142,13 @@ export class MiningComponent implements OnInit {
   }
 
   async balance() {
-    this.yourBalance = await this.web3Service.getBalance();
+    this.yourBalance = await this.web3Service.getBalance() / Math.pow(10, 18);
+  }
+
+  async checkBalance() {
+    if (this.yourBalance * Math.pow(10, 18) < this.stakeForm.value.stake * Math.pow(10, 18)) {
+      this.lowBalance = true;
+    } else this.lowBalance = false;
   }
 
 }

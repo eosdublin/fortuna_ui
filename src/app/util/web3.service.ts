@@ -301,8 +301,7 @@ export class Web3Service {
   async rewardPull() {
     const wndau = new this.web3.eth.Contract(wndauAbi, config.testNetToken);
     const res = await wndau.methods.balanceOf(config.stacking).call();
-    console.log(res / Math.pow(10, 18));
-    return res / Math.pow(10, 18);
+    return res / Math.pow(10, 10);
   }
 
   async yourStake(acc) {
@@ -313,7 +312,7 @@ export class Web3Service {
 
   async yourReward(acc) {
     const staking = new this.web3.eth.Contract(stakingAbi, config.stacking);
-    return await staking.methods.calculateUserRewards(acc).call();
+    return await staking.methods.calculateUserRewards(acc).call() / Math.pow(10, 10);
   }
 
   async claim() {
