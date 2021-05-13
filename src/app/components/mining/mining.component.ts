@@ -89,7 +89,10 @@ export class MiningComponent implements OnInit {
     if (!this.lowBalance) {
       this.approving = true;
       await this.web3Service.stake((this.stakeForm.value.stake * Math.pow(10, 18)).toLocaleString('fullwide', {useGrouping: false}))
-        .then( () => this.approving = false);
+        .then(() => {
+          this.approving = false;
+          location.reload()
+        });
     }
   }
 
@@ -111,26 +114,28 @@ export class MiningComponent implements OnInit {
 
   async getTimer() {
     let timer = await this.web3Service.getTimer();
-    timer = Number.parseInt(timer);
-    const now = Math.round(new Date().getTime() / 1000);
-    if (timer && ((timer + 7776000) > now)) {
-      this.ConvertSecToDay((timer + 7776000) - now);
+    timer.currentPeriod = Number.parseInt(timer.currentPeriod);
+    timer.rewardsPeriod = Number.parseInt(timer.rewardsPeriod);
+    let now = Math.round(new Date().getTime() / 1000);
+    if (timer && ((timer.currentPeriod + timer.rewardsPeriod) > now)) {
+      this.ConvertSecToDay((timer.currentPeriod + timer.rewardsPeriod) - now);
+      let t = setInterval(() => {
+        if (((timer.currentPeriod + timer.rewardsPeriod) === now)) {
+          clearInterval(t)
+        }
+        now = now + 1;
+        this.ConvertSecToDay((timer.currentPeriod + timer.rewardsPeriod) - now)
+      }, 1000)
     } else {
       this.cooldown = 0;
     }
   }
 
   ConvertSecToDay(n) {
-    const day = n / (24 * 3600);
-
-    n = n % (24 * 3600);
-    const hour = n / 3600;
-
-    n %= 3600;
-    const minutes = n / 60;
-
-    n %= 60;
-    const seconds = n;
+    var day = Math.floor(n / (3600 * 24));
+    var hour = Math.floor(n % (3600 * 24) / 3600);
+    var minutes = Math.floor(n % 3600 / 60);
+    var seconds = Math.floor(n % 60);
 
     this.cooldown = {
       days: day.toFixed(),
@@ -149,9 +154,7 @@ export class MiningComponent implements OnInit {
   }
 
   async checkBalance() {
-    if (this.yourBalance * Math.pow(10, 18) < this.stakeForm.value.stake * Math.pow(10, 18)) {
-      this.lowBalance = true;
-    } else this.lowBalance = false;
+    this.lowBalance = this.yourBalance * Math.pow(10, 18) < this.stakeForm.value.stake * Math.pow(10, 18);
   }
 
 }

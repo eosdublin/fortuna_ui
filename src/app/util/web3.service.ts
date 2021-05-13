@@ -37,6 +37,8 @@ export class Web3Service {
   public showPagiSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   public showPagi$: Observable<any[]> = this.showPagiSubject.asObservable();
 
+  public stakeBtnText = 'Stake';
+
   constructor() {
     window.addEventListener('load', (event) => {
       this.web3 = new Web3(window.ethereum);
@@ -276,12 +278,13 @@ export class Web3Service {
   async stake (amount) {
     const staking = new this.web3.eth.Contract(stakingAbi, config.stacking);
     const ierc20 = new this.web3.eth.Contract(ierc20Abi, config.IERC20);
-    console.log(amount)
     try {
+      this.stakeBtnText = 'Approve pending';
       const gas = await ierc20.methods.approve(config.stacking, amount)
         .estimateGas({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice});
       await ierc20.methods.approve(config.stacking, amount)
         .send({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice, gas: gas}).then(async () => {
+          this.stakeBtnText = 'Stake pending';
           const stakingGas = await staking.methods.stake(amount)
             .estimateGas({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice});
           await staking.methods.stake(amount)
@@ -341,7 +344,12 @@ export class Web3Service {
 
   async getTimer() {
     const staking = new this.web3.eth.Contract(stakingAbi, config.stacking);
-    return await staking.methods.currentPeriodStart().call();
+    const currentPeriod = await staking.methods.currentPeriodStart().call();
+    const rewardsPeriod = await staking.methods.REWARDS_PERIOD.call().call();
+    return {
+      currentPeriod: currentPeriod,
+      rewardsPeriod: rewardsPeriod
+    };
   }
 
   async isSigner() {

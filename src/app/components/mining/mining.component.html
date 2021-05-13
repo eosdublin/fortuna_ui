@@ -54,7 +54,7 @@
                  class="form-control"
                  formControlName="stake"
                  placeholder="1 WNDAU/USDC">
-          <button class="btn btn-yellow ml-3" [disabled]="!stakeForm.valid || approving" (click)="stake()">{{approving ? 'Approve' : 'Stake'}}</button>
+          <button class="btn btn-yellow ml-3" [disabled]="!stakeForm.valid || approving" (click)="stake()">{{approving ? web3Service.stakeBtnText : 'Stake'}}</button>
         </div>
       </div>
     </div>
