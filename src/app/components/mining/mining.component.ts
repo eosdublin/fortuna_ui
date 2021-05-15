@@ -23,6 +23,8 @@ export class MiningComponent implements OnInit {
   public yourBalance = 0;
   public lowBalance = false;
   public approving = false;
+  public stakeBtn = 'Stake'
+  public APY: any = 0;
 
   constructor(
     private web3Service: Web3Service,
@@ -35,10 +37,17 @@ export class MiningComponent implements OnInit {
       ])
     });
 
+    web3Service.submitted$.subscribe(value => {
+      if (value) {
+        this.getAPY();
+      }
+    });
+
     window.addEventListener('load', (event) => {
       this.getTotalStaked();
       this.getRewardPull();
       this.getTimer();
+      this.getAPY()
     });
 
     web3Service.accountSubject.subscribe(accs => {
@@ -49,6 +58,8 @@ export class MiningComponent implements OnInit {
         this.isSigner();
       }
     });
+
+    web3Service.stakeBtnSubject.subscribe(value => this.stakeBtn = value)
   }
 
   ngOnInit(): void {
@@ -155,6 +166,11 @@ export class MiningComponent implements OnInit {
 
   async checkBalance() {
     this.lowBalance = this.yourBalance * Math.pow(10, 18) < this.stakeForm.value.stake * Math.pow(10, 18);
+  }
+
+  async getAPY() {
+    this.APY = await this.web3Service.APY();
+    this.web3Service.submittedSubject.next(false);
   }
 
 }

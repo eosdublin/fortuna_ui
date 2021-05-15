@@ -37,7 +37,10 @@ export class Web3Service {
   public showPagiSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   public showPagi$: Observable<any[]> = this.showPagiSubject.asObservable();
 
-  public stakeBtnText = 'Stake';
+  public stakeBtnSubject: BehaviorSubject<any> = new BehaviorSubject<any>('Stake');
+  public stakeBtn$: Observable<any> = this.stakeBtnSubject.asObservable();
+
+  private totalStakedAmount = 0;
 
   constructor() {
     window.addEventListener('load', (event) => {
@@ -73,6 +76,7 @@ export class Web3Service {
     await this.web3.eth.net.getNetworkType()
       .then(console.log);
     this.bootstrapWeb3();
+    this.submittedSubject.next(true);
   }
 
   public async loadContract() {
@@ -279,12 +283,12 @@ export class Web3Service {
     const staking = new this.web3.eth.Contract(stakingAbi, config.stacking);
     const ierc20 = new this.web3.eth.Contract(ierc20Abi, config.IERC20);
     try {
-      this.stakeBtnText = 'Approve pending';
+      this.stakeBtnSubject.next('Approve pending');
       const gas = await ierc20.methods.approve(config.stacking, amount)
         .estimateGas({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice});
       await ierc20.methods.approve(config.stacking, amount)
         .send({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice, gas: gas}).then(async () => {
-          this.stakeBtnText = 'Stake pending';
+          this.stakeBtnSubject.next('Stake pending');
           const stakingGas = await staking.methods.stake(amount)
             .estimateGas({from: this.accountSubject.getValue()[0], gasPrice: this.web3.eth.gasPrice});
           await staking.methods.stake(amount)
@@ -298,6 +302,7 @@ export class Web3Service {
   async totalStaked() {
     const staking = new this.web3.eth.Contract(stakingAbi, config.stacking);
     const total = await staking.methods.totalStaked().call();
+    this.totalStakedAmount = total;
     return total;
   }
 
@@ -360,5 +365,32 @@ export class Web3Service {
   async getBalance() {
     const ierc20 = new this.web3.eth.Contract(ierc20Abi, config.IERC20);
     return await ierc20.methods.balanceOf(this.accountSubject.getValue()[0]).call();
+  }
+
+  async APY() {
+    const staking = new this.web3.eth.Contract(stakingAbi, config.stacking);
+    const wndau = new this.web3.eth.Contract(WNDAU, this.tumbler ? config.testNetToken : config.testNetToken);
+    const totalStakedDays = 7;
+    const total = await staking.methods.totalStaked().call();
+    const balance = await wndau.methods.balanceOf(config.stacking).call();
+    const totalRate = (total / Math.pow(10, 18)) / (balance / Math.pow(10, 10)) * 100;
+
+    const cooldown = await staking.methods.isCooldown().call()
+    if (cooldown) {
+      const stakeInfo = await staking.methods.staked(this.accountSubject.getValue()[0]).call();
+      const userRewards = await staking.methods.calculateUserRewards(this.accountSubject.getValue()[0]).call();
+      const currentPeriod = await staking.methods.currentPeriodStart().call();
+      const now = Math.round(new Date().getTime() / 1000);
+      const rate = (userRewards / Math.pow(10, 10)) / (stakeInfo.stakeAmount / Math.pow(10, 18)) * 100;
+      const stakedDays = (now - currentPeriod) / (60 * 60 * 24) + 1;
+      return {
+        total: (totalRate / totalStakedDays * 365).toFixed(2),
+        private: (rate / stakedDays * 365).toFixed(2)
+      };
+    }
+    return {
+      total: (totalRate / totalStakedDays * 365).toFixed(2),
+      private: 0
+    };
   }
 }
