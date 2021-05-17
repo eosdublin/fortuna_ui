@@ -25,6 +25,7 @@ export class MiningComponent implements OnInit {
   public approving = false;
   public stakeBtn = 'Stake'
   public APY: any = 0;
+  public reawardPeriodEnds = false
 
   constructor(
     private web3Service: Web3Service,
@@ -113,7 +114,9 @@ export class MiningComponent implements OnInit {
 
   unstake() {
     if (confirm('Are you sure you want to unstake?')) {
-      this.web3Service.unstake();
+      this.web3Service.unstake().then(() => {
+        location.reload()
+      });
     }
   }
 
@@ -127,15 +130,28 @@ export class MiningComponent implements OnInit {
     let timer = await this.web3Service.getTimer();
     timer.currentPeriod = Number.parseInt(timer.currentPeriod);
     timer.rewardsPeriod = Number.parseInt(timer.rewardsPeriod);
+    timer.cooldownPeriod = Number.parseInt(timer.cooldownPeriod);
     let now = Math.round(new Date().getTime() / 1000);
     if (timer && ((timer.currentPeriod + timer.rewardsPeriod) > now)) {
       this.ConvertSecToDay((timer.currentPeriod + timer.rewardsPeriod) - now);
       let t = setInterval(() => {
         if (((timer.currentPeriod + timer.rewardsPeriod) === now)) {
           clearInterval(t)
+          this.reawardPeriodEnds = true;
+          let t2 = setInterval(() => {
+            if (((timer.currentPeriod + timer.rewardsPeriod + timer.cooldownPeriod) === now)) {
+              this.reawardPeriodEnds = false;
+              clearInterval(t2)
+              this.cooldown = 0;
+            } else {
+              now = now + 1;
+              this.ConvertSecToDay((timer.currentPeriod + timer.rewardsPeriod + timer.cooldownPeriod) - now)
+            }
+          }, 1000)
+        } else {
+          now = now + 1;
+          this.ConvertSecToDay((timer.currentPeriod + timer.rewardsPeriod) - now)
         }
-        now = now + 1;
-        this.ConvertSecToDay((timer.currentPeriod + timer.rewardsPeriod) - now)
       }, 1000)
     } else {
       this.cooldown = 0;

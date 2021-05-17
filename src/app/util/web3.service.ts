@@ -351,9 +351,11 @@ export class Web3Service {
     const staking = new this.web3.eth.Contract(stakingAbi, config.stacking);
     const currentPeriod = await staking.methods.currentPeriodStart().call();
     const rewardsPeriod = await staking.methods.REWARDS_PERIOD.call().call();
+    const cooldownPeriod = await staking.methods.COOLDOWN_PERIOD.call().call();
     return {
       currentPeriod: currentPeriod,
-      rewardsPeriod: rewardsPeriod
+      rewardsPeriod: rewardsPeriod,
+      cooldownPeriod: cooldownPeriod
     };
   }
 
@@ -373,7 +375,7 @@ export class Web3Service {
     const totalStakedDays = 7;
     const total = await staking.methods.totalStaked().call();
     const balance = await wndau.methods.balanceOf(config.stacking).call();
-    const totalRate = (total / Math.pow(10, 18)) / (balance / Math.pow(10, 10)) * 100;
+    const totalRate = (balance / Math.pow(10, 10)) / (total / Math.pow(10, 18))  * 100;
 
     const cooldown = await staking.methods.isCooldown().call()
     if (cooldown) {

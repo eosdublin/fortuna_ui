@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="d-flex flex-column mt-4 mt-lg-5">
-        <span>program ends in</span>
+        <span>{{reawardPeriodEnds ? 'cooldown ends in' : 'program ends in'}}</span>
         <div class="timer d-flex align-items-center">
           <div class="d-flex flex-column align-items-center">
             <div class="timer-block">
@@ -53,7 +53,10 @@
                  class="form-control"
                  formControlName="stake"
                  placeholder="1 WNDAU/USDC">
-          <button class="btn btn-yellow ml-3" [disabled]="!stakeForm.valid || approving" (click)="stake()">{{approving ? stakeBtn : 'Stake'}}</button>
+          <button class="btn btn-yellow ml-3" [disabled]="!stakeForm.valid || approving" (click)="stake()">
+            {{approving ? stakeBtn : 'Stake'}}
+            <div *ngIf="approving" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+          </button>
         </div>
       </div>
     </div>
