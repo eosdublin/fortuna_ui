@@ -375,7 +375,7 @@ export class Web3Service {
     const totalStakedDays = 7;
     const total = await staking.methods.totalStaked().call();
     const balance = await wndau.methods.balanceOf(config.stacking).call();
-    const totalRate = (balance / Math.pow(10, 10)) / (total / Math.pow(10, 18))  * 100;
+    const totalRate = (balance / Math.pow(10, 10)) / ((total / Math.pow(10, 18)) * 2) * 100;
 
     const cooldown = await staking.methods.isCooldown().call()
     if (cooldown) {

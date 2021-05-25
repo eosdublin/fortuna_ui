@@ -46,7 +46,8 @@
       <div class="form-group stake-form w-100 mt-auto mb-0">
         <div class="d-flex align-items-center">
           <span class="mr-4">stake now</span>
-          <span>APY: {{APY.total}}</span>
+          <span>APY: {{APY.total === 'NaN' ? 0 : APY.total}}</span>
+          <span *ngIf="lowBalance" class="text-danger ml-auto">Low balance</span>
         </div>
         <div class="d-flex align-items-center" [formGroup]="stakeForm" style="margin-top: 10px;">
           <input type="text"
