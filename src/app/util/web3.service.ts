@@ -2,8 +2,6 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import WNDAU from '../abi/wNDAU.json';
 import multsigWallet from '../abi/MultiSigWallet.json';
-import IERC20 from '../abi/IERC20.json';
-import Staking from '../abi/Staking.json';
 
 import config from '../configs/config.json';
 
@@ -377,22 +375,15 @@ export class Web3Service {
     const balance = await wndau.methods.balanceOf(config.stacking).call();
     const totalRate = (balance / Math.pow(10, 10)) / ((total / Math.pow(10, 18)) * 2) * 100;
 
-    const cooldown = await staking.methods.isCooldown().call()
-    if (cooldown) {
-      const stakeInfo = await staking.methods.staked(this.accountSubject.getValue()[0]).call();
-      const userRewards = await staking.methods.calculateUserRewards(this.accountSubject.getValue()[0]).call();
-      const currentPeriod = await staking.methods.currentPeriodStart().call();
-      const now = Math.round(new Date().getTime() / 1000);
-      const rate = (userRewards / Math.pow(10, 10)) / (stakeInfo.stakeAmount / Math.pow(10, 18)) * 100;
-      const stakedDays = (now - currentPeriod) / (60 * 60 * 24) + 1;
-      return {
-        total: (totalRate / totalStakedDays * 365).toFixed(2),
-        private: (rate / stakedDays * 365).toFixed(2)
-      };
-    }
+    const stakeInfo = await staking.methods.staked(this.accountSubject.getValue()[0]).call();
+    const userRewards = await staking.methods.calculateUserRewards(this.accountSubject.getValue()[0]).call();
+    const currentPeriod = await staking.methods.currentPeriodStart().call();
+    const now = Math.round(new Date().getTime() / 1000);
+    const rate = (userRewards / Math.pow(10, 10)) / (stakeInfo.stakeAmount / Math.pow(10, 18)) * 100;
+    const stakedDays = (now - currentPeriod) / (60 * 60 * 24) + 1;
     return {
       total: (totalRate / totalStakedDays * 365).toFixed(2),
-      private: 0
+      private: (rate / stakedDays * 365).toFixed(2)
     };
   }
 }

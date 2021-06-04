@@ -10,6 +10,7 @@ import { TransactionComponent } from './transaction/transaction.component';
 import {RouterModule} from "@angular/router";
 import { ModalContainerComponent } from './modal-container/modal-container.component';
 import { MiningComponent } from './mining/mining.component';
+import { NgbPopoverModule } from "@ng-bootstrap/ng-bootstrap";
 
 
 
@@ -26,7 +27,8 @@ import { MiningComponent } from './mining/mining.component';
       NgSelectModule,
       FormsModule,
       ReactiveFormsModule,
-      RouterModule
+      RouterModule,
+    NgbPopoverModule
   ],
   exports: [
     HeaderComponent,

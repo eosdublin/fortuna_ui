@@ -54,7 +54,7 @@
                  class="form-control"
                  formControlName="stake"
                  placeholder="1 WNDAU/USDC">
-          <button class="btn btn-yellow ml-3" [disabled]="!stakeForm.valid || approving" (click)="stake()">
+          <button ngbPopover="Be aware! When you provide additional stake during the rewards period, you will LOOSE the accumulated reward and start earning from the moment of the additional stake." triggers="mouseenter:mouseleave" class="btn btn-yellow ml-3" [disabled]="!stakeForm.valid || approving" (click)="stake()">
             {{approving ? stakeBtn : 'Stake'}}
             <div *ngIf="approving" class="lds-ring"><div></div><div></div><div></div><div></div></div>
           </button>
