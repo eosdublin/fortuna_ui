@@ -186,6 +186,7 @@ export class MiningComponent implements OnInit {
 
   async getAPY() {
     this.APY = await this.web3Service.APY();
+    console.log(this.APY)
     this.web3Service.submittedSubject.next(false);
   }
 
