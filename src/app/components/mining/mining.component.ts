@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Web3Service} from '../../util/web3.service';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-mining',
@@ -21,6 +21,11 @@ export class MiningComponent implements OnInit {
   public stakeForm: FormGroup;
   public canClaim = false;
   public yourBalance = 0;
+  public lowBalance = false;
+  public approving = false;
+  public stakeBtn = 'Stake'
+  public APY: any = 0;
+  public reawardPeriodEnds = false
 
   constructor(
     private web3Service: Web3Service,
@@ -33,10 +38,17 @@ export class MiningComponent implements OnInit {
       ])
     });
 
+    web3Service.submitted$.subscribe(value => {
+      if (value) {
+        this.getAPY();
+      }
+    });
+
     window.addEventListener('load', (event) => {
       this.getTotalStaked();
       this.getRewardPull();
       this.getTimer();
+      this.getAPY()
     });
 
     web3Service.accountSubject.subscribe(accs => {
@@ -47,6 +59,8 @@ export class MiningComponent implements OnInit {
         this.isSigner();
       }
     });
+
+    web3Service.stakeBtnSubject.subscribe(value => this.stakeBtn = value)
   }
 
   ngOnInit(): void {
@@ -56,7 +70,7 @@ export class MiningComponent implements OnInit {
   async getTotalStaked() {
     try {
       const total = await this.web3Service.totalStaked();
-      this.totalStaked = Number.parseInt(total);
+      this.totalStaked = Number.parseInt(total) / Math.pow(10, 18);
     } catch (err) {
       console.log(err);
     }
@@ -64,7 +78,7 @@ export class MiningComponent implements OnInit {
 
   async getYourStake(acc) {
     try {
-      this.yourStake = await this.web3Service.yourStake(acc);
+      this.yourStake = await this.web3Service.yourStake(acc) / Math.pow(10, 18);
     } catch (err) {
       console.log(err);
     }
@@ -82,9 +96,16 @@ export class MiningComponent implements OnInit {
     this.rewardPull = await this.web3Service.rewardPull();
   }
 
-  stake() {
-    console.log((this.stakeForm.value.stake * Math.pow(10, 18)).toLocaleString('fullwide', {useGrouping:false}));
-    this.web3Service.stake((this.stakeForm.value.stake * Math.pow(10, 18)).toLocaleString('fullwide', {useGrouping:false}));
+  async stake() {
+    this.checkBalance();
+    if (!this.lowBalance) {
+      this.approving = true;
+      await this.web3Service.stake((this.stakeForm.value.stake * Math.pow(10, 18)).toLocaleString('fullwide', {useGrouping: false}))
+        .then(() => {
+          this.approving = false;
+          location.reload()
+        });
+    }
   }
 
   claim() {
@@ -93,7 +114,9 @@ export class MiningComponent implements OnInit {
 
   unstake() {
     if (confirm('Are you sure you want to unstake?')) {
-      this.web3Service.unstake();
+      this.web3Service.unstake().then(() => {
+        location.reload()
+      });
     }
   }
 
@@ -105,26 +128,41 @@ export class MiningComponent implements OnInit {
 
   async getTimer() {
     let timer = await this.web3Service.getTimer();
-    timer = Number.parseInt(timer);
-    const now = Math.round(new Date().getTime() / 1000);
-    if (timer && ((timer + 7776000) > now)) {
-      this.ConvertSecToDay((timer + 7776000) - now);
+    timer.currentPeriod = Number.parseInt(timer.currentPeriod);
+    timer.rewardsPeriod = Number.parseInt(timer.rewardsPeriod);
+    timer.cooldownPeriod = Number.parseInt(timer.cooldownPeriod);
+    let now = Math.round(new Date().getTime() / 1000);
+    if (timer && ((timer.currentPeriod + timer.rewardsPeriod) > now)) {
+      this.ConvertSecToDay((timer.currentPeriod + timer.rewardsPeriod) - now);
+      let t = setInterval(() => {
+        if (((timer.currentPeriod + timer.rewardsPeriod) === now)) {
+          clearInterval(t)
+          this.reawardPeriodEnds = true;
+          let t2 = setInterval(() => {
+            if (((timer.currentPeriod + timer.rewardsPeriod + timer.cooldownPeriod) === now)) {
+              this.reawardPeriodEnds = false;
+              clearInterval(t2)
+              this.cooldown = 0;
+            } else {
+              now = now + 1;
+              this.ConvertSecToDay((timer.currentPeriod + timer.rewardsPeriod + timer.cooldownPeriod) - now)
+            }
+          }, 1000)
+        } else {
+          now = now + 1;
+          this.ConvertSecToDay((timer.currentPeriod + timer.rewardsPeriod) - now)
+        }
+      }, 1000)
     } else {
       this.cooldown = 0;
     }
   }
 
   ConvertSecToDay(n) {
-    const day = n / (24 * 3600);
-
-    n = n % (24 * 3600);
-    const hour = n / 3600;
-
-    n %= 3600;
-    const minutes = n / 60;
-
-    n %= 60;
-    const seconds = n;
+    var day = Math.floor(n / (3600 * 24));
+    var hour = Math.floor(n % (3600 * 24) / 3600);
+    var minutes = Math.floor(n % 3600 / 60);
+    var seconds = Math.floor(n % 60);
 
     this.cooldown = {
       days: day.toFixed(),
@@ -139,7 +177,17 @@ export class MiningComponent implements OnInit {
   }
 
   async balance() {
-    this.yourBalance = await this.web3Service.getBalance();
+    this.yourBalance = await this.web3Service.getBalance() / Math.pow(10, 18);
+  }
+
+  async checkBalance() {
+    this.lowBalance = this.yourBalance * Math.pow(10, 18) < this.stakeForm.value.stake * Math.pow(10, 18);
+  }
+
+  async getAPY() {
+    this.APY = await this.web3Service.APY();
+    console.log(this.APY)
+    this.web3Service.submittedSubject.next(false);
   }
 
 }

@@ -1,7 +1,6 @@
 <div class="d-flex align-items-center header-wrap">
   <img class="mr-auto" src="./assets/logo.svg" alt="">
-<!--  <span class="title mr-auto">{{url && url !== '/' ? 'Fortuna Minting Panel' : 'WNDAU Liquidity Mining Program'}}</span>-->
-  <div *ngIf="url && url !== '/'" class="d-flex align-items-center">
+  <div class="d-flex align-items-center">
     <span class="toggle-span" (click)="changeConnection(false)">TEST NET</span>
     <div class="toggle-wrap ml-2 mr-2" (click)="changeConnection(!toggle)">
       <div class="toggle-btn" [style.left]="!toggle ? '3px' : '21px'"></div>

@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="d-flex flex-column mt-4 mt-lg-5">
-        <span>program ends in</span>
+        <span>{{reawardPeriodEnds ? 'cooldown ends in' : 'program ends in'}}</span>
         <div class="timer d-flex align-items-center">
           <div class="d-flex flex-column align-items-center">
             <div class="timer-block">
@@ -46,14 +46,18 @@
       <div class="form-group stake-form w-100 mt-auto mb-0">
         <div class="d-flex align-items-center">
           <span class="mr-4">stake now</span>
-          <span>APY: {{yourReward !== '0' ? rewardPull / yourReward * stakeForm.value.stake : 0}}</span>
+          <span>APY: {{APY.total === 'NaN' ? 0 : APY.total}}</span>
+          <span *ngIf="lowBalance" class="text-danger ml-auto">Low balance</span>
         </div>
         <div class="d-flex align-items-center" [formGroup]="stakeForm" style="margin-top: 10px;">
           <input type="text"
                  class="form-control"
                  formControlName="stake"
                  placeholder="1 WNDAU/USDC">
-          <button class="btn btn-yellow ml-3" [disabled]="!stakeForm.valid" (click)="stake()">Stake</button>
+          <button ngbPopover="Be aware! When you provide additional stake during the rewards period, you will LOOSE the accumulated reward and start earning from the moment of the additional stake." triggers="mouseenter:mouseleave" class="btn btn-yellow ml-3" [disabled]="!stakeForm.valid || approving" (click)="stake()">
+            {{approving ? stakeBtn : 'Stake'}}
+            <div *ngIf="approving" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+          </button>
         </div>
       </div>
     </div>
@@ -104,7 +108,7 @@
       </div>
       <div class="d-flex flex-column">
         <span>APY</span>
-        <span class="stake-value">{{yourReward !== '0' ? rewardPull / yourReward * yourStake : 0}} WNDAU</span>
+        <span class="stake-value">{{APY.private !== 'NaN' ? APY.private : 0}} WNDAU</span>
       </div>
       <div class="d-flex mt-auto">
         <button class="btn btn-yellow mr-2" (click)="unstake()">Unstake</button>
